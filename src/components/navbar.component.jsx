@@ -30,6 +30,7 @@ function Navbar() {
 
     if (e.keyCode === 13 && query.length) {
       navigate(`/search/${query}`);
+      setSearchBoxVisibility((currentVal) => !currentVal);
     }
   };
 
