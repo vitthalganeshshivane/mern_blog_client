@@ -10,10 +10,13 @@ function Navbar() {
 
   let navigate = useNavigate();
 
-  const {
-    userAuth,
-    userAuth: { access_token, profile_img },
-  } = useContext(userContext);
+  // const {
+  //   userAuth,
+  //   userAuth: { access_token, profile_img },
+  // } = useContext(userContext);
+
+  const { userAuth = {} } = useContext(userContext) || {};
+  const { access_token, profile_img } = userAuth;
 
   const handleUserNavPanel = () => {
     setUserNavPanel((currentVal) => !currentVal);
