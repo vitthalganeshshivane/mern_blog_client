@@ -1,4 +1,8 @@
+import { useContext, useState } from "react";
 import { getDay } from "../common/date";
+import { userContext } from "../App";
+import toast from "react-hot-toast";
+import CommentField from "./comment-field.component";
 
 const CommentCard = ({ index, leftVal, commentData }) => {
   let {
@@ -8,6 +12,20 @@ const CommentCard = ({ index, leftVal, commentData }) => {
     commentedAt,
     comment,
   } = commentData;
+
+  let {
+    userAuth: { access_token },
+  } = useContext(userContext);
+
+  const [isReplying, setReplying] = useState(false);
+
+  const handleReplyClick = () => {
+    if (!access_token) {
+      return toast.error("login first to leave a reply a reply");
+    }
+
+    setReplying((preVal) => !preVal);
+  };
 
   return (
     <div className="w-full" style={{ paddingLeft: `${leftVal * 10}px` }}>
@@ -21,7 +39,18 @@ const CommentCard = ({ index, leftVal, commentData }) => {
         </div>
         <p className="font-gelasio text-xl ml-3">{comment}</p>
 
-        <div></div>
+        <div className="flex gap-5 items-center mt-5">
+          <button onClick={handleReplyClick} className="underline">
+            Reply
+          </button>
+        </div>
+        {isReplying ? (
+          <div className="mt-8">
+            <CommentField action="reply" />
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );
