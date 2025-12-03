@@ -12,7 +12,8 @@ import { filterPaginationData } from "../common/filter-pagination-data";
 import LoadMoreDataBtn from "../components/load-more.component";
 
 const HomePage = () => {
-  let [blogs, setBlog] = useState(null);
+  // let [blogs, setBlog] = useState(null);
+  let [blogs, setBlog] = useState({ results: [], total: 0 });
   let [trendingBlogs, setTrendingBlogs] = useState(null);
   let [pageState, setPageState] = useState("home");
 
@@ -63,7 +64,7 @@ const HomePage = () => {
           data_to_send: { tag: pageState },
         });
 
-        setBlog(formatedData);
+        // setBlog(formatedData);
 
         setBlog(data.blogs);
       })
@@ -121,7 +122,7 @@ const HomePage = () => {
             <>
               {blogs === null ? (
                 <Loader />
-              ) : blogs.results.length ? (
+              ) : blogs?.results?.length ? (
                 blogs.results.map((blog, i) => {
                   return (
                     <AnimationWrapper
@@ -149,7 +150,7 @@ const HomePage = () => {
             <>
               {trendingBlogs === null ? (
                 <Loader />
-              ) : trendingBlogs.length ? (
+              ) : trendingBlogs?.length ? (
                 trendingBlogs.map((blog, i) => {
                   return (
                     <AnimationWrapper
@@ -197,7 +198,7 @@ const HomePage = () => {
               </h1>
               {trendingBlogs === null ? (
                 <Loader />
-              ) : trendingBlogs.length ? (
+              ) : trendingBlogs?.length ? (
                 trendingBlogs.map((blog, i) => {
                   return (
                     <AnimationWrapper
