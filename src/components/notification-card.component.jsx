@@ -1,15 +1,28 @@
 import { Link } from "react-router-dom";
+import { getDay } from "../common/date";
+import { useContext, useState } from "react";
+import NotificationCommentField from "./notification-comment-field.component";
+import { userContext } from "../App";
 
 const NotificationCard = ({ data, index, notificationState }) => {
+  let [isReplying, setReplying] = useState(false);
+
   let {
     type,
+    createdAt,
     comment,
     replied_on_comment,
+    user,
     user: {
       personal_info: { fullname, username, profile_img },
     },
-    blog: { blog_id, title },
+    blog: { _id, blog_id, title },
+    _id: notification_id,
   } = data;
+
+  const handleReplyClick = () => {
+    setReplying((preVal) => !preVal);
+  };
 
   return (
     <div className="p-6 border-b border-grey border-l-black">
@@ -54,6 +67,39 @@ const NotificationCard = ({ data, index, notificationState }) => {
         <p className="ml-14 pl-5 font-gelasio text-xl my-5">
           {comment.comment}
         </p>
+      ) : (
+        ""
+      )}
+
+      <div className="ml-14 pl-5 text-dark-grey flex gap-8">
+        <p>{getDay(createdAt)}</p>
+        {type !== "like" ? (
+          <>
+            <button
+              onClick={handleReplyClick}
+              className="underline hover:text-black"
+            >
+              Reply
+            </button>
+            <button className="underline hover:text-black">Delete</button>
+          </>
+        ) : (
+          ""
+        )}
+      </div>
+
+      {isReplying ? (
+        <div className="mt-8">
+          <NotificationCommentField
+            _id={_id}
+            blog_author={user}
+            index={index}
+            replyingTo={comment._id}
+            setReplying={setReplying}
+            notification_id={notification_id}
+            notificationData={notificationState}
+          />
+        </div>
       ) : (
         ""
       )}
