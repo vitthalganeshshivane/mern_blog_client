@@ -71,7 +71,7 @@ export const ManagePublishedBlogsCard = ({ blog }) => {
             </button>
             <button
               className="pr-4 py-2 underline text-red"
-              onClick={() => deleteBlog(blog, access_token, e.target)}
+              onClick={(e) => deleteBlog(blog, access_token, e.target)}
             >
               Delete
             </button>
@@ -119,7 +119,7 @@ export const ManageDraftBlogPost = ({ blog }) => {
           </Link>
           <button
             className="pr-4 py-2 mt-3 underline text-red"
-            onClick={() => deleteBlog(blog, access_token, e.target)}
+            onClick={(e) => deleteBlog(blog, access_token, e.target)}
           >
             Delete
           </button>
