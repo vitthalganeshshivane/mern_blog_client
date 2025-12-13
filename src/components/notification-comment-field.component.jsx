@@ -1,4 +1,7 @@
-import { useState } from "react";
+import axios from "axios";
+import { useContext, useState } from "react";
+import toast from "react-hot-toast";
+import { userContext } from "../App";
 
 const NotificationCommentField = ({
   _id,
@@ -11,7 +14,7 @@ const NotificationCommentField = ({
 }) => {
   let [comment, setComment] = useState("");
 
-  let { _id: user_id } = blog_id;
+  let { _id: user_id } = blog_author;
   let {
     userAuth: { access_token },
   } = useContext(userContext);
@@ -22,7 +25,34 @@ const NotificationCommentField = ({
     setNotifications,
   } = notificationData;
 
-  const handleComment = () => {};
+  const handleComment = () => {
+    if (!comment.length) {
+      return toast.error("Write something to leave the comment...");
+    }
+
+    axios
+      .post(
+        import.meta.env.VITE_SERVER_DOMAIN + "/add-comment",
+        {
+          _id,
+          blog_author: user_id,
+          comment,
+          replying_to: replyingTo,
+          notification_id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      )
+      .then(({ data }) => {
+        setReplying(false);
+        results[index].reply = { comment, _id: data._id };
+        setNotifications({ ...notifications, results });
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <>
