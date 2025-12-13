@@ -2,10 +2,17 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { userContext } from "../App";
 import { filterPaginationData } from "../common/filter-pagination-data";
+import Loader from "../components/loader.component";
+import AnimationWrapper from "../common/page-animation";
+import NotificationCard from "../components/notification-card.component";
+import NoDataMessage from "../components/nodata.component";
+import LoadMoreDataBtn from "../components/load-more.component";
 
 const Notifications = () => {
   let {
-    userAuth: { access_token },
+    userAuth,
+    userAuth: { access_token, new_notification_available },
+    setUserAuth,
   } = useContext(userContext);
 
   const [filter, setFilter] = useState("all");
@@ -24,7 +31,10 @@ const Notifications = () => {
           },
         }
       )
-      .then(async ({ data: { Notifications: data } }) => {
+      .then(async ({ data: { notifications: data } }) => {
+        if (new_notification_available) {
+          setUserAuth({ ...userAuth, new_notification_available: false });
+        }
         let formatedData = await filterPaginationData({
           state: notifications,
           data,
@@ -48,9 +58,13 @@ const Notifications = () => {
   }, [access_token, filter]);
 
   const handleFilter = (e) => {
-    let btn = e.target;
+    // let btn = e.target;
+    // setFilter(btn.innerHTML);
 
-    setFilter(btn.innerHTML);
+    const value = e.target.textContent.trim().toLowerCase();
+    setFilter(value);
+
+    setNotifications(null);
   };
 
   return (
@@ -72,6 +86,34 @@ const Notifications = () => {
           );
         })}
       </div>
+
+      {notifications == null ? (
+        <Loader />
+      ) : (
+        <>
+          {notifications?.results?.length ? (
+            notifications.results.map((notification, i) => {
+              return (
+                <AnimationWrapper key={i} transition={{ delay: i * 0.08 }}>
+                  <NotificationCard
+                    data={notification}
+                    index={i}
+                    notificationState={{ notifications, setNotifications }}
+                  />
+                </AnimationWrapper>
+              );
+            })
+          ) : (
+            <NoDataMessage message="Nothing Available" />
+          )}
+
+          <LoadMoreDataBtn
+            state={notifications}
+            fetchDataFun={fetchNotifications}
+            additionalParam={{ deletedDocCount: notifications.deletedDocCount }}
+          />
+        </>
+      )}
     </div>
   );
 };
