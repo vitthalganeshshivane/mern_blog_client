@@ -4,7 +4,7 @@ import { userContext } from "../App";
 
 const SideNav = () => {
   let {
-    userAuth: { access_token },
+    userAuth: { access_token, new_notification_available, isAdmin },
   } = useContext(userContext);
 
   let page = location.pathname.split("/")[2];
@@ -76,7 +76,7 @@ const SideNav = () => {
             <hr className="border-grey -ml-6 mb-8 mr-6" />
 
             <NavLink
-              to="/dashboards/blogs"
+              to="/dashboard/blogs"
               onClick={(e) => setPageState(e.target.innerText)}
               className="sidebar-link"
             >
@@ -85,22 +85,33 @@ const SideNav = () => {
             </NavLink>
 
             <NavLink
-              to="/dashboards/notification"
+              to="/dashboard/notifications"
               onClick={(e) => setPageState(e.target.innerText)}
               className="sidebar-link"
             >
-              <i className="fi fi-rr-bell"></i>
+              <div className="relative">
+                <i className="fi fi-rr-bell"></i>
+                {new_notification_available ? (
+                  <span className="bg-red w-2 h-2 rounded-full absolute z-10 top-0 right-0"></span>
+                ) : (
+                  ""
+                )}
+              </div>
               Notification
             </NavLink>
 
-            <NavLink
-              to="/editor"
-              onClick={(e) => setPageState(e.target.innerText)}
-              className="sidebar-link"
-            >
-              <i className="fi fi-rr-file-edit"></i>
-              Blogs
-            </NavLink>
+            {isAdmin ? (
+              <NavLink
+                to="/editor"
+                onClick={(e) => setPageState(e.target.innerText)}
+                className="sidebar-link"
+              >
+                <i className="fi fi-rr-file-edit"></i>
+                Write
+              </NavLink>
+            ) : (
+              ""
+            )}
 
             <h1 className="text-xl text-dark-grey mt-20 mb-3">Settings</h1>
             <hr className="border-grey -ml-6 mb-8 mr-6" />
