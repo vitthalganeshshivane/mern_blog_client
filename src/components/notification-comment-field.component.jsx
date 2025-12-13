@@ -14,7 +14,14 @@ const NotificationCommentField = ({
 }) => {
   let [comment, setComment] = useState("");
 
-  let { _id: user_id } = blog_author;
+  // let { _id: user_id } = blog_author;
+
+  if (!blog_author || !blog_author._id) {
+    return null;
+  }
+
+  let user_id = blog_author._id;
+
   let {
     userAuth: { access_token },
   } = useContext(userContext);
