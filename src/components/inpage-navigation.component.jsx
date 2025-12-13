@@ -22,6 +22,9 @@ const InPageNavigation = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  let [isResizeEventAdded, setIsResizeEventAdded] = useState(false);
+  let [width, setWidth] = useState(window.innerWidth);
+
   const changePageState = (btn, i) => {
     let { offsetWidth, offsetLeft } = btn;
 
@@ -32,8 +35,20 @@ const InPageNavigation = ({
   };
 
   useEffect(() => {
-    changePageState(activeTabRef.current, defaultActiveIndex);
-  }, []);
+    if (width > 766 && inPageNavIndex !== defaultActiveIndex) {
+      changePageState(activeTabRef.current, defaultActiveIndex);
+    }
+
+    if (!isResizeEventAdded) {
+      window.addEventListener("resize", () => {
+        if (!isResizeEventAdded) {
+          setIsResizeEventAdded(true);
+        }
+
+        setWidth(window.innerWidth);
+      });
+    }
+  }, [width]);
 
   return (
     <>
@@ -54,7 +69,10 @@ const InPageNavigation = ({
             </button>
           );
         })}
-        <hr ref={activeTabLineRef} className="absolute bottom-0 duration-300" />
+        <hr
+          ref={activeTabLineRef}
+          className="absolute bottom-0 duration-300 border-dark-grey"
+        />
       </div>
       {Array.isArray(children) ? children[inPageNavIndex] : children}
     </>
