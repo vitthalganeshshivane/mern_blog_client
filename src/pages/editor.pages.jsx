@@ -27,7 +27,7 @@ function Editor() {
   const [loading, setLoading] = useState(true);
 
   let {
-    userAuth: { access_token },
+    userAuth: { access_token, isAdmin },
   } = useContext(userContext);
 
   useEffect(() => {
