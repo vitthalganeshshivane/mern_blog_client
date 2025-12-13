@@ -12,8 +12,8 @@ import { filterPaginationData } from "../common/filter-pagination-data";
 import LoadMoreDataBtn from "../components/load-more.component";
 
 const HomePage = () => {
-  // let [blogs, setBlog] = useState(null);
-  let [blogs, setBlog] = useState({ results: [], total: 0 });
+  let [blogs, setBlog] = useState(null);
+  // let [blogs, setBlog] = useState({ results: [], total: 0 });
   let [trendingBlogs, setTrendingBlogs] = useState(null);
   let [pageState, setPageState] = useState("home");
 
@@ -64,9 +64,9 @@ const HomePage = () => {
           data_to_send: { tag: pageState },
         });
 
-        // setBlog(formatedData);
+        setBlog(formatedData);
 
-        setBlog(data.blogs);
+        // setBlog(data.blogs);
       })
       .catch((err) => {
         console.log(err);
@@ -85,7 +85,7 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    activeTabRef.current.click();
+    activeTabRef.current?.click();
 
     if (pageState == "home") {
       fetchLatestBlogs({ page: 1 });
