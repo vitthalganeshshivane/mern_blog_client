@@ -5,6 +5,7 @@ import BlogEditor from "../components/blog-editor.component.jsx";
 import PublishForm from "../components/publish-form.component.jsx";
 import Loader from "../components/loader.component";
 import axios from "axios";
+import PageNotFound from "./404.page.jsx";
 
 const blogStructure = {
   title: "",
@@ -61,7 +62,9 @@ function Editor() {
         setTextEditor,
       }}
     >
-      {access_token === null ? (
+      {!isAdmin ? (
+        <Navigate to="/404" />
+      ) : access_token === null ? (
         <Navigate to="/signin" />
       ) : loading ? (
         <Loader />
