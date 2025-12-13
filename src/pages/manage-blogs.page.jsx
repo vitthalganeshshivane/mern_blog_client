@@ -123,7 +123,7 @@ const ManageBlogs = () => {
               fetchDataFun={getBlogs}
               additionalParam={{
                 draft: false,
-                deletedDocCount: blogs.deletedDocCount,
+                deletedDocCount: blogs?.deletedDocCount || 0,
               }}
             />
           </>
@@ -149,7 +149,7 @@ const ManageBlogs = () => {
               fetchDataFun={getBlogs}
               additionalParam={{
                 draft: true,
-                deletedDocCount: blogs.deletedDocCount,
+                deletedDocCount: drafts?.deletedDocCount || 0,
               }}
             />
           </>
