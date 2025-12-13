@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 
-function InputBox({ name, type, id, value, placeholder, icon }) {
+function InputBox({
+  name,
+  type,
+  id,
+  value,
+  placeholder,
+  icon,
+  disable = false,
+}) {
   const [passwordVisible, setPasswordVisible] = useState(false);
   return (
     <div className="relative w-[100%] mb-4">
@@ -11,6 +19,7 @@ function InputBox({ name, type, id, value, placeholder, icon }) {
         }
         placeholder={placeholder}
         defaultValue={value}
+        disabled={disable}
         id={id}
         className="input-box"
       />
