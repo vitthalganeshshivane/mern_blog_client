@@ -4,20 +4,37 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { BlogContext } from "../pages/blog.page";
 
-const CommentField = ({ action }) => {
-  let {
-    blog,
-    blog: {
-      _id,
-      author: { _id: blog_author },
-      comments,
-      comments: { results: commentsArr },
-      activity,
-      activity: { total_comments, total_parent_comments },
-    },
-    setBlog,
-    setTotalParentCommentsLoaded,
-  } = useContext(BlogContext);
+const CommentField = ({
+  action,
+  index = undefined,
+  replyingTo = undefined,
+  setReplying,
+}) => {
+  // let {
+  //   blog,
+  //   blog: {
+  //     _id,
+  //     author: { _id: blog_author },
+  //     comments,
+  //     comments: { results: commentsArr },
+  //     activity,
+  //     activity: { total_comments, total_parent_comments },
+  //   },
+  //   setBlog,
+  //   setTotalParentCommentsLoaded,
+  // } = useContext(BlogContext);
+
+  let { blog, setBlog, setTotalParentCommentsLoaded } = useContext(BlogContext);
+
+  const _id = blog?._id;
+  const blog_author = blog?.author?._id;
+
+  const comments = blog?.comments;
+  const commentsArr = comments?.results || [];
+
+  const activity = blog?.activity || {};
+  const total_comments = activity.total_comments || 0;
+  const total_parent_comments = activity.total_parent_comments || 0;
 
   let {
     userAuth: { access_token, username, fullname, profile_img },
@@ -37,7 +54,7 @@ const CommentField = ({ action }) => {
     axios
       .post(
         import.meta.env.VITE_SERVER_DOMAIN + "/add-comment",
-        { _id, blog_author, comment },
+        { _id, blog_author, comment, replying_to: replyingTo },
         {
           headers: {
             Authorization: `Bearer ${access_token}`,
@@ -51,11 +68,29 @@ const CommentField = ({ action }) => {
           personal_info: { username, profile_img, fullname },
         };
 
-        data.childrenLevel = 0;
+        let newCommentArr;
 
-        const newCommentArr = [data, ...(comments?.results || [])];
+        if (replyingTo) {
+          commentsArr[index].children.push(data._id);
 
-        let parentInc = 1;
+          data.childrenLevel = commentsArr[index].childrenLevel + 1;
+
+          data.parentIndex = index;
+
+          commentsArr[index].isReplyLoaded = true;
+
+          commentsArr.splice(index + 1, 0, data);
+
+          newCommentArr = commentsArr;
+
+          setReplying(false);
+        } else {
+          data.childrenLevel = 0;
+
+          newCommentArr = [data, ...(comments?.results || [])];
+        }
+
+        let parentInc = replyingTo ? 0 : 1;
 
         setBlog({
           ...blog,
