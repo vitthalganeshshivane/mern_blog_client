@@ -16,12 +16,14 @@ const NotificationCard = ({ data, index, notificationState }) => {
     comment,
     replied_on_comment,
     user,
-    user: {
-      personal_info: { fullname, username, profile_img },
-    },
+
     blog: { _id, blog_id, title },
     _id: notification_id,
   } = data;
+
+  const fullname = user?.personal_info?.fullname || "Deleted User";
+  const username = user?.personal_info?.username || "unknown";
+  const profile_img = user?.personal_info?.profile_img;
 
   let {
     userAuth: {
